@@ -1,7 +1,5 @@
 import streamlit as st
-import pandas as pd
 import time
-import matplotlib as plt
 
 st.success('Gratulacje! Z powodzeniem uruchomiłeś aplikację')
 
