@@ -57,11 +57,12 @@ st.write('Wybierz opcję tłumaczenia tekstu, a następnie wpisz tekst do przet�
 
 import streamlit as st
 from transformers import pipeline
-#from transformers import FSMTForConditionalGeneration, FSMTTokenizer
-#import time
-#model_name = "facebook/wmt19-en-de"
-#tokenizer = FSMTTokenizer.from_pretrained(model_name)
-#model = FSMTForConditionalGeneration.from_pretrained(model_name)
+from transformers import FSMTForConditionalGeneration, FSMTTokenizer
+import sacremoses
+import torch
+model_name = "facebook/wmt19-en-de"
+tokenizer = FSMTTokenizer.from_pretrained(model_name)
+model = FSMTForConditionalGeneration.from_pretrained(model_name)
 
 
 option = st.selectbox(
@@ -81,15 +82,16 @@ if option == "Wydźwięk emocjonalny tekstu (eng)":
 if option == "Tłumaczenie tekstu":
     text = st.text_area(label="Wpisz tekst")
     if text:
-        translator = pipeline("translation_en_to_de")
         try:
             with st.spinner('Tłumaczenie w toku...'):
                 progress_bar = st.progress(0)
                 for percent_complete in range(100):
                     time.sleep(0.01)
                     progress_bar.progress(percent_complete + 1)
-            answer = translator(text)
-            st.write(answer.pop().get('translation_text'))
+                inputs = tokenizer.encode(text, return_tensors="pt")
+                outputs = model.generate(inputs)
+                translated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            st.write(translated_text)
         except Exception as e:
             st.error(f'Error: {e}')
 
