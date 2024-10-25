@@ -33,7 +33,7 @@ if option == "Tłumaczenie tekstu":
     text = st.text_area(label="Wpisz tekst")
     if st.button('Przetłumacz'):
         if text:
-            translator = pipeline("translation_en_to_de")
+            translator = pipeline("translation_en_to_de", model="Helsinki-NLP/opus-mt-en-de")
             try:
                 with st.spinner('Tłumaczenie w toku...'):
                     progress_bar = st.progress(0)
